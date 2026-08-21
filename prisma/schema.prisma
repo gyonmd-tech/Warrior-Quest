@@ -1,0 +1,332 @@
+// This is your Prisma schema file for PostgreSQL
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CharacterClass {
+  WARRIOR
+  MAGE
+  ROGUE
+  PALADIN
+}
+
+enum QuestCategory {
+  LEGENDARY
+  DAILY
+  SIDE
+}
+
+enum QuestPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum RecurringType {
+  NONE
+  DAILY
+  WEEKLY
+}
+
+enum EquipmentType {
+  WEAPON
+  SHIELD
+  ARMOR
+  PET
+  POTION
+}
+
+enum RewardCategory {
+  TREAT
+  GAMING
+  SHOPPING
+  REST
+  CUSTOM
+}
+
+enum TrophyRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+model User {
+  id                    String              @id @default(uuid())
+  email                 String              @unique
+  passwordHash          String
+  name                  String
+  characterClass        CharacterClass      @default(WARRIOR)
+  title                 String              @default("Vanguard of Daily Discipline")
+  avatarUrl             String
+  level                 Int                 @default(1)
+  currentXp             Int                 @default(0)
+  maxXp                 Int                 @default(1000)
+  lifetimeXp            BigInt              @default(0)
+  totalFocusMinutes     Int                 @default(0)
+  energy                Int                 @default(85)
+  maxEnergy             Int                 @default(100)
+  coins                 Int                 @default(250)
+  gems                  Int                 @default(25)
+  streakDays            Int                 @default(1)
+  lastLoginDate         DateTime            @default(now()) @db.Date
+  totalQuestsCompleted  Int                 @default(0)
+  totalDamageDealt      Int                 @default(0)
+
+  // Relationships
+  stats                 UserStat?
+  settings              UserSetting?
+  quests                Quest[]
+  focusSessions         FocusSession[]
+  inventory             UserInventory[]
+  selfRewards           SelfReward[]
+  trophies              UserTrophy[]
+  dailyRewards          UserDailyReward[]
+  activityLogs          ActivityDailyLog[]
+  bossAttacks           UserBossAttack[]
+
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@map("users")
+}
+
+model UserStat {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  strength      Int       @default(14)
+  agility       Int       @default(12)
+  intelligence  Int       @default(10)
+  vitality      Int       @default(16)
+  updatedAt     DateTime  @updatedAt
+
+  @@map("user_stats")
+}
+
+model UserSetting {
+  id                      String    @id @default(uuid())
+  userId                  String    @unique
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  soundEnabled            Boolean   @default(true)
+  theme                   String    @default("retro-pop")
+  focusDurationMinutes    Int       @default(25)
+  breakDurationMinutes    Int       @default(5)
+  autoCompleteOnFocusEnd  Boolean   @default(false)
+  showGridBackground      Boolean   @default(true)
+  dailyReminder           Boolean   @default(true)
+  updatedAt               DateTime  @updatedAt
+
+  @@map("user_settings")
+}
+
+model Quest {
+  id                String          @id @default(uuid())
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?
+  category          QuestCategory   @default(DAILY)
+  xpReward          Int             @default(100)
+  goldReward        Int             @default(50)
+  gemReward         Int             @default(0)
+  bossDamage        Int             @default(100)
+  statAttribute     String?
+  priority          QuestPriority   @default(MEDIUM)
+  estimatedMinutes  Int             @default(25)
+  recurringType     RecurringType   @default(NONE)
+  completed         Boolean         @default(false)
+  completedAt       DateTime?
+  dueDate           DateTime?       @db.Date
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  subtasks          QuestSubtask[]
+  focusSessions     FocusSession[]
+
+  @@index([userId, category, completed])
+  @@map("quests")
+}
+
+model QuestSubtask {
+  id          String    @id @default(uuid())
+  questId     String
+  quest       Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+  text        String
+  completed   Boolean   @default(false)
+  orderIndex  Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  @@map("quest_subtasks")
+}
+
+model FocusSession {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId         String?
+  quest           Quest?    @relation(fields: [questId], references: [id], onDelete: SetNull)
+  durationMinutes Int
+  xpEarned        Int       @default(50)
+  completedAt     DateTime  @default(now())
+
+  @@index([userId, completedAt])
+  @@map("focus_sessions")
+}
+
+model EquipmentCatalog {
+  id            String          @id @default(uuid())
+  name          String
+  type          EquipmentType
+  icon          String
+  stats         String
+  description   String
+  levelReq      Int             @default(1)
+  priceGold     Int?
+  priceGems     Int?
+  bonusStr      Int             @default(0)
+  bonusAgi      Int             @default(0)
+  bonusInt      Int             @default(0)
+  bonusVit      Int             @default(0)
+  isStarter     Boolean         @default(false)
+
+  userInventory UserInventory[]
+
+  @@map("equipment_catalog")
+}
+
+model UserInventory {
+  id            String            @id @default(uuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  equipmentId   String
+  equipment     EquipmentCatalog  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipped      Boolean           @default(false)
+  acquiredAt    DateTime          @default(now())
+
+  @@unique([userId, equipmentId])
+  @@map("user_inventory")
+}
+
+model SelfReward {
+  id          String          @id @default(uuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  targetXp    Int
+  icon        String          @default("card_giftcard")
+  category    RewardCategory  @default(CUSTOM)
+  claimed     Boolean         @default(false)
+  claimedAt   DateTime?
+  createdAt   DateTime        @default(now())
+
+  @@index([userId, claimed])
+  @@map("self_rewards")
+}
+
+model TrophyCatalog {
+  id            String        @id @default(uuid())
+  code          String        @unique
+  title         String
+  description   String
+  icon          String
+  rarity        TrophyRarity  @default(COMMON)
+  maxProgress   Int           @default(1)
+  rewardGems    Int           @default(10)
+
+  userTrophies  UserTrophy[]
+
+  @@map("trophies_catalog")
+}
+
+model UserTrophy {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trophyId      String
+  trophy        TrophyCatalog @relation(fields: [trophyId], references: [id], onDelete: Cascade)
+  progress      Int           @default(0)
+  unlocked      Boolean       @default(false)
+  unlockedAt    DateTime?
+  claimedReward Boolean       @default(false)
+  claimedAt     DateTime?
+  updatedAt     DateTime      @updatedAt
+
+  @@unique([userId, trophyId])
+  @@map("user_trophies")
+}
+
+model UserDailyReward {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day             Int
+  rewardType      String    // 'xp' | 'gem' | 'badge' | 'coin'
+  amount          Int
+  label           String
+  icon            String
+  claimed         Boolean   @default(false)
+  claimedAt       DateTime?
+  cycleStartDate  DateTime  @default(now()) @db.Date
+
+  @@unique([userId, day, cycleStartDate])
+  @@map("user_daily_rewards")
+}
+
+model ActivityDailyLog {
+  id                String    @id @default(uuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date              DateTime  @db.Date
+  xpEarned          Int       @default(0)
+  questsCompleted   Int       @default(0)
+  focusMinutes      Int       @default(0)
+  bossDamageDealt   Int       @default(0)
+
+  @@unique([userId, date])
+  @@map("activity_daily_logs")
+}
+
+model RaidBossEvent {
+  id                  String            @id @default(uuid())
+  name                String
+  title               String
+  element             String            @default("Shadow Dark")
+  weakness            String            @default("Legendary Quests")
+  currentHp           Int
+  maxHp               Int
+  imageUrl            String?
+  avatarIcon          String            @default("pest_control")
+  rewardXp            Int               @default(1200)
+  rewardCoins         Int               @default(500)
+  rewardGems          Int               @default(50)
+  timeRemainingHours  Int               @default(16)
+  isActive            Boolean           @default(true)
+  startsAt            DateTime          @default(now())
+  endsAt              DateTime
+
+  bossAttacks         UserBossAttack[]
+
+  @@map("raid_boss_events")
+}
+
+model UserBossAttack {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bossId        String
+  boss          RaidBossEvent @relation(fields: [bossId], references: [id], onDelete: Cascade)
+  damageDealt   Int
+  energySpent   Int           @default(10)
+  attackedAt    DateTime      @default(now())
+
+  @@map("user_boss_attacks")
+}

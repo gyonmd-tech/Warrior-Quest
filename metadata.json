@@ -1,0 +1,6 @@
+{
+  "name": "Warrior Quest Log",
+  "description": "Gamified mobile task and quest tracker with soft-brutalist pop-art styling, XP progression, self-reward milestone reminders, interactive calendar heatmap, and productivity analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
