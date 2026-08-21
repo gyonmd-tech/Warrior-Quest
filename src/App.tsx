@@ -202,6 +202,36 @@ export const App: React.FC = () => {
       }
     }
     syncWithBackend();
+
+    // Real-Time Daily Streak Check based on Real Calendar Dates
+    const today = new Date().toISOString().split('T')[0];
+    const lastLogin = user.lastLoginDate ? user.lastLoginDate.split('T')[0] : '';
+
+    if (lastLogin && lastLogin !== today) {
+      const todayDate = new Date(today);
+      const lastDate = new Date(lastLogin);
+      const diffTime = Math.abs(todayDate.getTime() - lastDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        setUser((prev) => ({
+          ...prev,
+          streakDays: prev.streakDays + 1,
+          lastLoginDate: today,
+        }));
+      } else if (diffDays > 1) {
+        setUser((prev) => ({
+          ...prev,
+          streakDays: 1,
+          lastLoginDate: today,
+        }));
+      }
+    } else if (!lastLogin) {
+      setUser((prev) => ({
+        ...prev,
+        lastLoginDate: today,
+      }));
+    }
   }, []);
 
   // Local Storage Persistence

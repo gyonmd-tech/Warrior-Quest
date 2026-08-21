@@ -10,6 +10,7 @@ import {
   playQuestCompleteSound,
   playRewardSound,
 } from '../utils/audio';
+import { useRealTime } from '../utils/useRealTime';
 import { DailyRewardsRow } from './DailyRewardsRow';
 import { StatusRow } from './StatusRow';
 
@@ -44,6 +45,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
 }) => {
   const [isAttacking, setIsAttacking] = useState(false);
   const [lastDamage, setLastDamage] = useState<number | null>(null);
+  const { greeting, greetingIcon, dateString, timeString, formattedResetCountdown } = useRealTime();
 
   const activeQuests = quests.filter((q) => !q.completed);
   const activeCount = activeQuests.length;
@@ -114,13 +116,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="font-pixel text-[8px] sm:text-[8.5px] bg-[#ffd000] text-[#1b1214] px-2.5 py-0.5 chunky-border font-bold shadow-[1.5px_1.5px_0px_#1b1214]">
                     RANK #{user.level > 10 ? 'ELITE' : 'ROOKIE'}
                   </span>
+                  <span className="font-pixel text-[7.5px] bg-white text-[#1b1214] px-2 py-0.5 chunky-border font-bold shadow-[1px_1px_0px_#1b1214] flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[13px] text-[#ff6b00]">
+                      {greetingIcon}
+                    </span>
+                    {timeString}
+                  </span>
                 </div>
                 <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ff0055] mt-1.5 leading-tight break-words">
-                  Selamat Bertualang, {user.name}!
+                  {greeting}, {user.name}!
                 </h2>
                 <p className="font-body text-xs sm:text-sm text-[#4a3034] font-medium flex items-center gap-2 mt-1 flex-wrap">
+                  <span className="font-bold text-[#1b1214]">{dateString}</span>
+                  <span className="text-[#805b60]">&bull;</span>
                   <span>{user.title || 'Vanguard of Daily Discipline'}</span>
-                  <span className="text-[#007d7a] font-bold">&bull; Multiplier Aktif 🔥</span>
                 </p>
               </div>
             </div>
@@ -140,8 +149,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
           {/* World Boss Raid Live Encounter */}
           <div className="bg-white p-5 sm:p-6 lg:p-7 xl:p-8 rounded-none chunky-border legendary-glow relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-[#ff0055] text-white font-pixel text-[8px] sm:text-[8.5px] px-3 sm:px-3.5 py-1 chunky-border border-[#b9003f] uppercase font-bold shadow-[2px_2px_0px_#1b1214]">
-              RAID BOSS LIVE &bull; {raidBoss.timeRemainingHours}j Tersisa
+            <div className="absolute top-0 right-0 bg-[#ff0055] text-white font-pixel text-[8px] sm:text-[8.5px] px-3 sm:px-3.5 py-1 chunky-border border-[#b9003f] uppercase font-bold shadow-[2px_2px_0px_#1b1214] flex items-center gap-1.5">
+              <span className="w-2 h-2 bg-[#39ff14] rounded-full animate-ping" />
+              <span>RAID BOSS LIVE &bull; ⏳ {formattedResetCountdown}</span>
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 mt-5 sm:mt-3">

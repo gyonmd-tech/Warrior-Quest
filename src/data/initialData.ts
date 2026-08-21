@@ -521,15 +521,25 @@ export const INITIAL_SELF_REWARDS: SelfReward[] = [
   },
 ];
 
-export const INITIAL_ACTIVITY_LOGS: ActivityDayRecord[] = [
-  { date: '2026-08-14', xpEarned: 320, questsCompleted: 4, focusMinutes: 50, streakCount: 1 },
-  { date: '2026-08-15', xpEarned: 450, questsCompleted: 5, focusMinutes: 75, streakCount: 2 },
-  { date: '2026-08-16', xpEarned: 280, questsCompleted: 3, focusMinutes: 45, streakCount: 3 },
-  { date: '2026-08-17', xpEarned: 600, questsCompleted: 6, focusMinutes: 90, streakCount: 4 },
-  { date: '2026-08-18', xpEarned: 510, questsCompleted: 5, focusMinutes: 80, streakCount: 5 },
-  { date: '2026-08-19', xpEarned: 380, questsCompleted: 4, focusMinutes: 60, streakCount: 5 },
-  { date: '2026-08-20', xpEarned: 750, questsCompleted: 7, focusMinutes: 110, streakCount: 5 },
-];
+const generateRealDateLogs = (): ActivityDayRecord[] => {
+  const xpValues = [320, 450, 280, 600, 510, 380, 750];
+  const questValues = [4, 5, 3, 6, 5, 4, 7];
+  const focusValues = [50, 75, 45, 90, 80, 60, 110];
+
+  return Array.from({ length: 7 }).map((_, idx) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - idx));
+    return {
+      date: d.toISOString().split('T')[0],
+      xpEarned: xpValues[idx],
+      questsCompleted: questValues[idx],
+      focusMinutes: focusValues[idx],
+      streakCount: idx + 1,
+    };
+  });
+};
+
+export const INITIAL_ACTIVITY_LOGS: ActivityDayRecord[] = generateRealDateLogs();
 
 export const INITIAL_SETTINGS: AppSettings = {
   soundEnabled: true,

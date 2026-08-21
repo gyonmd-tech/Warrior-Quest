@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppSettings, UserProfile } from '../types';
 import { playClickSound, playHoverSound, setSoundEnabled } from '../utils/audio';
+import { useRealTime } from '../utils/useRealTime';
 import { NavTabType } from './BottomNav';
 
 interface DesktopTopBarProps {
@@ -38,17 +39,17 @@ const TAB_TITLES: Record<NavTabType, { title: string; subtitle: string; icon: st
   },
   hero: {
     title: 'Karakter Hero & Armory Perlengkapan',
-    subtitle: 'Kustomisasi avatar, latih atribut STR/AGI/INT/VIT, dan beli equipment.',
-    icon: 'person',
+    subtitle: 'Kustomisasi avatar, upgrade stat matrix, dan belanja senjata di toko pandai besi.',
+    icon: 'shield_person',
   },
   trophies: {
-    title: 'Ruang Trofi Kehormatan & Prestasi',
-    subtitle: 'Koleksi pencapaian legendaris dan klaim bonus permata berharga.',
-    icon: 'emoji_events',
+    title: 'Aula Kehormatan & Prestise Trofi',
+    subtitle: 'Koleksi medali keberhasilan dan klaim hadiah permata langka.',
+    icon: 'military_tech',
   },
   settings: {
-    title: 'Pengaturan Game & Konfigurasi Sistem',
-    subtitle: 'Atur efek suara retro, tema antarmuka, dan manajemen backup data.',
+    title: 'Pusat Konfigurasi & Soundboard',
+    subtitle: 'Kustomisasi audio 8-bit, timer duel fokus, dan ekspor/impor cadangan.',
     icon: 'settings',
   },
 };
@@ -65,6 +66,7 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
   onToggleSound,
 }) => {
   const tabInfo = TAB_TITLES[activeTab] || TAB_TITLES.home;
+  const { timeString, dateString, formattedResetCountdown } = useRealTime();
   const energyPercent = Math.min(100, Math.round((user.energy / user.maxEnergy) * 100));
 
   const handleSoundToggle = () => {
@@ -73,13 +75,6 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
     onToggleSound(next);
     if (next) playClickSound();
   };
-
-  const currentDate = new Date().toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
 
   return (
     <header className="hidden lg:flex flex-wrap items-center justify-between gap-4 bg-white p-4.5 xl:p-5 chunky-border chunky-shadow mb-6 select-none relative overflow-hidden">
@@ -105,14 +100,39 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
               AKTIF
             </span>
           </div>
-          <p className="font-body text-xs sm:text-sm text-[#805b60] mt-0.5 truncate">
-            {tabInfo.subtitle} &bull; <span className="font-medium text-[#1b1214]">{currentDate}</span>
+          <p className="font-body text-xs sm:text-sm text-[#805b60] mt-0.5 truncate flex items-center gap-2">
+            <span>{tabInfo.subtitle}</span>
           </p>
         </div>
       </div>
 
       {/* Right: Quick Resources & Header Shortcuts */}
       <div className="flex items-center gap-2.5 pt-1 flex-wrap">
+        {/* Real-time Clock Pill */}
+        <div
+          title="Waktu Real-Time Sinkron"
+          className="flex items-center gap-1.5 bg-[#1b1214] text-[#39ff14] px-3 py-2 chunky-border font-pixel text-[8.5px] font-bold shadow-[2px_2px_0px_#1b1214]"
+        >
+          <span className="material-symbols-outlined text-[16px] text-[#ffea79] animate-pulse">
+            schedule
+          </span>
+          <span>{timeString}</span>
+          <span className="text-[#805b60] hidden xl:inline">&bull;</span>
+          <span className="text-white hidden xl:inline">{dateString}</span>
+        </div>
+
+        {/* Daily Reset Countdown */}
+        <div
+          title="Hitung Mundur Reset Quest Harian (00:00:00)"
+          className="flex items-center gap-1.5 bg-[#fff6f8] px-3 py-2 chunky-border font-pixel text-[8px] text-[#1b1214] font-bold shadow-[2px_2px_0px_#1b1214]"
+        >
+          <span className="material-symbols-outlined text-[16px] text-[#00f5ff]">
+            hourglass_top
+          </span>
+          <span className="text-[#805b60] hidden xl:inline">RESET:</span>
+          <span className="text-[#ff0055]">{formattedResetCountdown}</span>
+        </div>
+
         {/* Streak Indicator */}
         <div
           onMouseEnter={() => playHoverSound()}

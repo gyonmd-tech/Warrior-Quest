@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppSettings, UserProfile } from '../types';
 import { playClickSound, playHoverSound, setSoundEnabled } from '../utils/audio';
+import { useRealTime } from '../utils/useRealTime';
 
 interface HeaderProps {
   user: UserProfile;
@@ -25,6 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
   onLogout,
   claimableTrophiesCount = 0,
 }) => {
+  const { timeString, shortDate, formattedResetCountdown } = useRealTime();
   const energyPercent = Math.min(100, Math.round((user.energy / user.maxEnergy) * 100));
 
   const handleSoundToggle = () => {
@@ -65,6 +67,9 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
               <span className="font-pixel text-[7px] bg-[#39ff14] text-[#1b1214] px-1.5 py-0.5 chunky-border font-bold shadow-[1.5px_1.5px_0px_#1b1214]">
                 LVL {user.level}
+              </span>
+              <span className="font-pixel text-[6.5px] bg-[#1b1214] text-[#39ff14] px-1.5 py-0.5 chunky-border font-bold shadow-[1px_1px_0px_#1b1214] ml-auto sm:ml-0">
+                🕒 {timeString}
               </span>
             </div>
             <h1 className="font-headline font-bold text-xl sm:text-2xl text-[#1b1214] leading-tight group-hover:text-[#ff0055] transition-colors flex items-center gap-1.5">
