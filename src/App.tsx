@@ -161,6 +161,16 @@ export const App: React.FC = () => {
     setSoundEnabled(settings.soundEnabled);
   }, [settings.soundEnabled]);
 
+  // Apply Dynamic Theme & Motion Reduction to HTML Root
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', settings.theme);
+    if (settings.reduceAnimations) {
+      document.documentElement.classList.add('reduce-motion');
+    } else {
+      document.documentElement.classList.remove('reduce-motion');
+    }
+  }, [settings.theme, settings.reduceAnimations]);
+
   // Background Backend API Sync on Mount
   useEffect(() => {
     async function syncWithBackend() {
@@ -790,9 +800,10 @@ export const App: React.FC = () => {
 
   return (
     <div
-      className={`min-h-screen bg-[#fff8f7] pb-24 lg:pb-12 selection:bg-[#e51152] selection:text-white ${
+      data-theme={settings.theme}
+      className={`min-h-screen app-root theme-${settings.theme} bg-[#fff8f7] pb-24 lg:pb-12 selection:bg-[#e51152] selection:text-white transition-colors duration-200 ${
         settings.showGridBackground ? 'game-grid-bg' : ''
-      }`}
+      } ${settings.reduceAnimations ? 'reduce-motion' : ''}`}
     >
       <div className="w-full max-w-[1760px] mx-auto p-3 sm:p-4 md:p-6 lg:p-6 xl:p-8">
         <div className="lg:flex lg:gap-6 xl:gap-8 lg:items-start">
@@ -981,6 +992,8 @@ export const App: React.FC = () => {
         onClose={() => setActiveFocusQuest(null)}
         quest={activeFocusQuest}
         onBattleVictory={handleBattleVictory}
+        defaultDurationMinutes={settings.focusDurationMinutes}
+        autoCompleteOnFocusEnd={settings.autoCompleteOnFocusEnd}
       />
     </div>
   );

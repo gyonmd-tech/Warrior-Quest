@@ -15,6 +15,8 @@ interface FocusBattleModalProps {
   onClose: () => void;
   quest: Quest | null;
   onBattleVictory: (questId: string, damageDealt: number) => void;
+  defaultDurationMinutes?: number;
+  autoCompleteOnFocusEnd?: boolean;
 }
 
 export const FocusBattleModal: React.FC<FocusBattleModalProps> = ({
@@ -22,10 +24,19 @@ export const FocusBattleModal: React.FC<FocusBattleModalProps> = ({
   onClose,
   quest,
   onBattleVictory,
+  defaultDurationMinutes = 25,
+  autoCompleteOnFocusEnd = true,
 }) => {
-  const [secondsRemaining, setSecondsRemaining] = useState(25 * 60);
+  const [selectedDuration, setSelectedDuration] = useState(defaultDurationMinutes);
+  const [secondsRemaining, setSecondsRemaining] = useState(defaultDurationMinutes * 60);
   const [isActive, setIsActive] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState(25);
+
+  useEffect(() => {
+    if (defaultDurationMinutes) {
+      setSelectedDuration(defaultDurationMinutes);
+      setSecondsRemaining(defaultDurationMinutes * 60);
+    }
+  }, [defaultDurationMinutes, isOpen]);
 
   useEffect(() => {
     setSecondsRemaining(selectedDuration * 60);

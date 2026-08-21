@@ -185,3 +185,141 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   THEME STYLES ENGINE: Dark Dungeon, Clean Light & Motion Reducer
+   ========================================================================== */
+
+/* 1. DARK DUNGEON THEME */
+[data-theme="dark-dungeon"],
+.theme-dark-dungeon {
+  background-color: #0a0c14 !important;
+  color: #f0f4fc !important;
+}
+
+[data-theme="dark-dungeon"] body,
+.theme-dark-dungeon body {
+  background-color: #0a0c14 !important;
+  color: #f0f4fc !important;
+}
+
+[data-theme="dark-dungeon"] .game-grid-bg,
+.theme-dark-dungeon .game-grid-bg {
+  background-image: 
+    radial-gradient(#1f263d 2px, transparent 2px),
+    radial-gradient(#1f263d 2px, transparent 2px) !important;
+}
+
+[data-theme="dark-dungeon"] .bg-white,
+.theme-dark-dungeon .bg-white {
+  background-color: #141824 !important;
+  color: #f0f4fc !important;
+  border-color: #2b334d !important;
+}
+
+[data-theme="dark-dungeon"] .bg-\[\#fff8f7\],
+[data-theme="dark-dungeon"] .bg-\[\#fff6f8\],
+[data-theme="dark-dungeon"] .bg-\[\#fff0f3\],
+.theme-dark-dungeon .bg-\[\#fff8f7\],
+.theme-dark-dungeon .bg-\[\#fff6f8\],
+.theme-dark-dungeon .bg-\[\#fff0f3\] {
+  background-color: #1b2030 !important;
+  color: #e2e8f0 !important;
+  border-color: #2b334d !important;
+}
+
+[data-theme="dark-dungeon"] .bg-\[\#ffe2e6\],
+[data-theme="dark-dungeon"] .bg-\[\#ffd0d7\],
+.theme-dark-dungeon .bg-\[\#ffe2e6\],
+.theme-dark-dungeon .bg-\[\#ffd0d7\] {
+  background-color: #252b40 !important;
+  color: #f8fafc !important;
+  border-color: #3e486b !important;
+}
+
+[data-theme="dark-dungeon"] .text-\[\#1b1214\],
+.theme-dark-dungeon .text-\[\#1b1214\] {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark-dungeon"] .text-\[\#4a3034\],
+.theme-dark-dungeon .text-\[\#4a3034\] {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark-dungeon"] .text-\[\#805b60\],
+.theme-dark-dungeon .text-\[\#805b60\] {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark-dungeon"] .border-\[\#ffe2e6\],
+[data-theme="dark-dungeon"] .border-\[\#ffd0d7\],
+[data-theme="dark-dungeon"] .border-\[\#fcc2ca\],
+.theme-dark-dungeon .border-\[\#ffe2e6\],
+.theme-dark-dungeon .border-\[\#ffd0d7\],
+.theme-dark-dungeon .border-\[\#fcc2ca\] {
+  border-color: #2b334d !important;
+}
+
+[data-theme="dark-dungeon"] .chunky-border,
+.theme-dark-dungeon .chunky-border {
+  border-color: #2b334d !important;
+}
+
+[data-theme="dark-dungeon"] .chunky-shadow,
+.theme-dark-dungeon .chunky-shadow {
+  box-shadow: 6px 6px 0px 0px #05060a !important;
+}
+
+[data-theme="dark-dungeon"] .arcade-btn,
+.theme-dark-dungeon .arcade-btn {
+  box-shadow: 4px 4px 0px 0px #05060a !important;
+}
+
+/* 2. CLEAN LIGHT THEME */
+[data-theme="clean-light"],
+.theme-clean-light {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+[data-theme="clean-light"] body,
+.theme-clean-light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+[data-theme="clean-light"] .game-grid-bg,
+.theme-clean-light .game-grid-bg {
+  background-image: 
+    radial-gradient(#cbd5e1 2px, transparent 2px),
+    radial-gradient(#cbd5e1 2px, transparent 2px) !important;
+}
+
+[data-theme="clean-light"] .bg-\[\#fff8f7\],
+[data-theme="clean-light"] .bg-\[\#fff6f8\],
+.theme-clean-light .bg-\[\#fff8f7\],
+.theme-clean-light .bg-\[\#fff6f8\] {
+  background-color: #f1f5f9 !important;
+}
+
+[data-theme="clean-light"] .bg-\[\#ffe2e6\],
+.theme-clean-light .bg-\[\#ffe2e6\] {
+  background-color: #e2e8f0 !important;
+}
+
+[data-theme="clean-light"] .border-\[\#ffe2e6\],
+.theme-clean-light .border-\[\#ffe2e6\] {
+  border-color: #cbd5e1 !important;
+}
+
+/* 3. REDUCE ANIMATIONS / MOTION */
+.reduce-motion,
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
