@@ -10,6 +10,7 @@ interface HeaderProps {
   onOpenSettings?: () => void;
   onOpenTrophies?: () => void;
   onOpenEnergyModal?: () => void;
+  onOpenEconomyModal?: () => void;
   onToggleSound?: (enabled: boolean) => void;
   onLogout?: () => void;
   claimableTrophiesCount?: number;
@@ -107,8 +108,13 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Gold Coins */}
           <div
+            onClick={() => {
+              playClickSound();
+              if (onOpenEconomyModal) onOpenEconomyModal();
+            }}
             onMouseEnter={() => playHoverSound()}
-            className="flex items-center gap-1.5 bg-[#ffea79] px-2.5 py-1.5 chunky-border font-pixel text-[8px] text-[#1b1214] font-bold shadow-[2px_2px_0px_#1b1214]"
+            title="Koin Emas - Klik untuk Info & Toko"
+            className="flex items-center gap-1.5 bg-[#ffea79] hover:bg-[#ffd000] px-2.5 py-1.5 chunky-border font-pixel text-[8px] text-[#1b1214] font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
           >
             <span
               className="material-symbols-outlined text-[#ff6b00] text-[16px]"
@@ -121,11 +127,16 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Gems */}
           <div
+            onClick={() => {
+              playClickSound();
+              if (onOpenEconomyModal) onOpenEconomyModal();
+            }}
             onMouseEnter={() => playHoverSound()}
-            className="flex items-center gap-1.5 bg-[#fcc2ca] px-2.5 py-1.5 chunky-border font-pixel text-[8px] text-[#ff0055] font-bold shadow-[2px_2px_0px_#1b1214]"
+            title="Permata Langka - Klik untuk Info & Toko"
+            className="flex items-center gap-1.5 bg-[#fcc2ca] hover:bg-[#ff0055] hover:text-white px-2.5 py-1.5 chunky-border font-pixel text-[8px] text-[#ff0055] font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
           >
             <span
-              className="material-symbols-outlined text-[#ff0055] text-[16px]"
+              className="material-symbols-outlined text-[16px]"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               diamond

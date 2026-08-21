@@ -24,6 +24,7 @@ interface HeroViewProps {
   ) => void;
   onLogout: () => void;
   onNavigateToTrophies?: () => void;
+  onOpenEconomyModal?: () => void;
 }
 
 // Icon helper ensuring valid material symbol ligatures
@@ -126,8 +127,13 @@ export const HeroView: React.FC<HeroViewProps> = ({
 
             <div className="flex items-center justify-center sm:justify-start gap-2.5 mt-2.5 flex-wrap">
               <div
+                onClick={() => {
+                  playClickSound();
+                  if (onOpenEconomyModal) onOpenEconomyModal();
+                }}
                 onMouseEnter={() => playHoverSound()}
-                className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[8.5px] text-[#1b1214] bg-[#ffea79] px-3 py-1 chunky-border font-bold shadow-[2px_2px_0px_#1b1214]"
+                title="Koin Emas - Klik untuk Info & Toko"
+                className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[8.5px] text-[#1b1214] bg-[#ffea79] hover:bg-[#ffd000] px-3 py-1 chunky-border font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
               >
                 <span
                   className="material-symbols-outlined text-[16px] text-[#ff6b00]"
@@ -138,8 +144,13 @@ export const HeroView: React.FC<HeroViewProps> = ({
                 <span>{user.coins} Gold</span>
               </div>
               <div
+                onClick={() => {
+                  playClickSound();
+                  if (onOpenEconomyModal) onOpenEconomyModal();
+                }}
                 onMouseEnter={() => playHoverSound()}
-                className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[8.5px] text-[#ff0055] bg-[#fcc2ca] px-3 py-1 chunky-border font-bold shadow-[2px_2px_0px_#1b1214]"
+                title="Permata Langka - Klik untuk Info & Toko"
+                className="flex items-center gap-1.5 font-pixel text-[8px] sm:text-[8.5px] text-[#ff0055] bg-[#fcc2ca] hover:bg-[#ff0055] hover:text-white px-3 py-1 chunky-border font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
               >
                 <span
                   className="material-symbols-outlined text-[16px]"
@@ -257,14 +268,28 @@ export const HeroView: React.FC<HeroViewProps> = ({
         {/* Tab 2: Merchant Shop */}
         {activeTab === 'shop' && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline text-xl sm:text-2xl font-bold text-[#ff6b00] flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#ff6b00]">storefront</span>
-                Pandai Besi & Toko Merchant
-              </h3>
-              <span className="font-pixel text-[8px] text-[#4a3034]">
-                Gunakan koin hasil petualangan!
-              </span>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#fff6f8] p-3.5 sm:p-4 chunky-border">
+              <div>
+                <h3 className="font-headline text-xl sm:text-2xl font-bold text-[#ff6b00] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#ff6b00]">storefront</span>
+                  Pandai Besi & Toko Merchant
+                </h3>
+                <p className="font-body text-xs text-[#4a3034] mt-0.5">
+                  Tukarkan koin emas 🪙 atau permata 💎 hasil petualangan dengan gear tempur!
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  playClickSound();
+                  if (onOpenEconomyModal) onOpenEconomyModal();
+                }}
+                onMouseEnter={() => playHoverSound()}
+                className="px-3.5 py-2 bg-[#ffea79] hover:bg-[#ffd000] text-[#1b1214] font-pixel text-[7.5px] sm:text-[8px] chunky-border arcade-btn font-bold flex items-center gap-1.5 cursor-pointer whitespace-nowrap shadow-[2px_2px_0px_#1b1214]"
+              >
+                <span className="material-symbols-outlined text-[16px] text-[#ff0055]">help</span>
+                PANDUAN GOLD VS GEMS
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-5">

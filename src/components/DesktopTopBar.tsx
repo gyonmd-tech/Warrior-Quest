@@ -13,6 +13,7 @@ interface DesktopTopBarProps {
   onOpenHeroModal: () => void;
   onOpenSettings: () => void;
   onOpenTrophies: () => void;
+  onOpenEconomyModal?: () => void;
   onToggleSound: (enabled: boolean) => void;
 }
 
@@ -172,9 +173,13 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
 
         {/* Gold Coins */}
         <div
+          onClick={() => {
+            playClickSound();
+            if (onOpenEconomyModal) onOpenEconomyModal();
+          }}
           onMouseEnter={() => playHoverSound()}
-          title="Koin Emas"
-          className="flex items-center gap-1.5 bg-[#ffea79] px-3 py-2 chunky-border font-pixel text-[8.5px] text-[#1b1214] font-bold shadow-[2px_2px_0px_#1b1214]"
+          title="Koin Emas - Klik untuk Panduan & Toko"
+          className="flex items-center gap-1.5 bg-[#ffea79] hover:bg-[#ffd000] px-3 py-2 chunky-border font-pixel text-[8.5px] text-[#1b1214] font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
         >
           <span
             className="material-symbols-outlined text-[#ff6b00] text-[18px]"
@@ -187,12 +192,16 @@ export const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
 
         {/* Gems */}
         <div
+          onClick={() => {
+            playClickSound();
+            if (onOpenEconomyModal) onOpenEconomyModal();
+          }}
           onMouseEnter={() => playHoverSound()}
-          title="Permata Berharga"
-          className="flex items-center gap-1.5 bg-[#fcc2ca] px-3 py-2 chunky-border font-pixel text-[8.5px] text-[#ff0055] font-bold shadow-[2px_2px_0px_#1b1214]"
+          title="Permata Langka - Klik untuk Panduan & Toko"
+          className="flex items-center gap-1.5 bg-[#fcc2ca] hover:bg-[#ff0055] hover:text-white px-3 py-2 chunky-border font-pixel text-[8.5px] text-[#ff0055] font-bold shadow-[2px_2px_0px_#1b1214] cursor-pointer arcade-btn"
         >
           <span
-            className="material-symbols-outlined text-[#ff0055] text-[18px]"
+            className="material-symbols-outlined text-[18px]"
             style={{ fontVariationSettings: "'FILL' 1" }}
           >
             diamond

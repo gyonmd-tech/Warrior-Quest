@@ -4,6 +4,7 @@ import { BottomNav, NavTabType } from './components/BottomNav';
 import { CalendarAnalyticsView } from './components/CalendarAnalyticsView';
 import { DesktopSidebar } from './components/DesktopSidebar';
 import { DesktopTopBar } from './components/DesktopTopBar';
+import { EconomyTreasuryModal } from './components/EconomyTreasuryModal';
 import { EnergyModal } from './components/EnergyModal';
 import { FocusBattleModal } from './components/FocusBattleModal';
 import { Header } from './components/Header';
@@ -72,6 +73,7 @@ export const App: React.FC = () => {
   const [isNewQuestOpen, setIsNewQuestOpen] = useState(false);
   const [isNewSelfRewardOpen, setIsNewSelfRewardOpen] = useState(false);
   const [isEnergyOpen, setIsEnergyOpen] = useState(false);
+  const [isEconomyOpen, setIsEconomyOpen] = useState(false);
   const [levelUpLevel, setLevelUpLevel] = useState<number | null>(null);
   const [activeFocusQuest, setActiveFocusQuest] = useState<Quest | null>(null);
   const [unlockedMilestoneReward, setUnlockedMilestoneReward] = useState<SelfReward | null>(null);
@@ -833,6 +835,7 @@ export const App: React.FC = () => {
                 onOpenSettings={() => setActiveTab('settings')}
                 onOpenTrophies={() => setActiveTab('trophies')}
                 onOpenEnergyModal={() => setIsEnergyOpen(true)}
+                onOpenEconomyModal={() => setIsEconomyOpen(true)}
                 onToggleSound={(enabled) => handleUpdateSettings({ soundEnabled: enabled })}
                 onLogout={handleLogout}
                 claimableTrophiesCount={claimableTrophiesCount}
@@ -849,6 +852,7 @@ export const App: React.FC = () => {
               onOpenHeroModal={() => setActiveTab('hero')}
               onOpenSettings={() => setActiveTab('settings')}
               onOpenTrophies={() => setActiveTab('trophies')}
+              onOpenEconomyModal={() => setIsEconomyOpen(true)}
               onToggleSound={(enabled) => handleUpdateSettings({ soundEnabled: enabled })}
             />
 
@@ -912,6 +916,7 @@ export const App: React.FC = () => {
                   }
                   onLogout={handleLogout}
                   onNavigateToTrophies={() => setActiveTab('trophies')}
+                  onOpenEconomyModal={() => setIsEconomyOpen(true)}
                 />
               )}
 
@@ -994,6 +999,26 @@ export const App: React.FC = () => {
         onBattleVictory={handleBattleVictory}
         defaultDurationMinutes={settings.focusDurationMinutes}
         autoCompleteOnFocusEnd={settings.autoCompleteOnFocusEnd}
+      />
+
+      <EconomyTreasuryModal
+        isOpen={isEconomyOpen}
+        onClose={() => setIsEconomyOpen(false)}
+        user={user}
+        onNavigateToTab={(tab) => {
+          setIsEconomyOpen(false);
+          setActiveTab(tab);
+        }}
+        onOpenEnergyModal={() => {
+          setIsEconomyOpen(false);
+          setIsEnergyOpen(true);
+        }}
+        onBuyStreakFreeze={() => {
+          setUser((prev) => ({
+            ...prev,
+            gems: Math.max(0, prev.gems - 10),
+          }));
+        }}
       />
     </div>
   );
