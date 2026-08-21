@@ -13,6 +13,7 @@ import { HomeView } from './components/HomeView';
 import { LevelUpModal } from './components/LevelUpModal';
 import { LoadingScreen } from './components/LoadingScreen';
 import { LoginView } from './components/LoginView';
+import { LuckyWheelModal, WheelReward } from './components/LuckyWheelModal';
 import { NewQuestModal } from './components/NewQuestModal';
 import { NewSelfRewardModal } from './components/NewSelfRewardModal';
 import { QuestsView } from './components/QuestsView';
@@ -74,6 +75,7 @@ export const App: React.FC = () => {
   const [isNewSelfRewardOpen, setIsNewSelfRewardOpen] = useState(false);
   const [isEnergyOpen, setIsEnergyOpen] = useState(false);
   const [isEconomyOpen, setIsEconomyOpen] = useState(false);
+  const [isLuckyWheelOpen, setIsLuckyWheelOpen] = useState(false);
   const [levelUpLevel, setLevelUpLevel] = useState<number | null>(null);
   const [activeFocusQuest, setActiveFocusQuest] = useState<Quest | null>(null);
   const [unlockedMilestoneReward, setUnlockedMilestoneReward] = useState<SelfReward | null>(null);
@@ -740,6 +742,37 @@ export const App: React.FC = () => {
     );
   };
 
+  // Lucky Fortune Wheel Handlers
+  const handleClaimWheelReward = (reward: WheelReward) => {
+    switch (reward.type) {
+      case 'coins':
+        setUser((u) => ({ ...u, coins: u.coins + reward.amount }));
+        break;
+      case 'gems':
+        setUser((u) => ({ ...u, gems: u.gems + reward.amount }));
+        break;
+      case 'energy':
+        setUser((u) => ({ ...u, energy: Math.min(u.maxEnergy, u.energy + reward.amount) }));
+        break;
+      case 'xp':
+        grantXp(reward.amount);
+        break;
+      case 'boss_dmg':
+        handleAttackBoss(reward.amount);
+        break;
+      case 'streak_shield':
+        // Protected
+        break;
+    }
+  };
+
+  const handleDeductCurrency = (type: 'coins' | 'gems', amount: number) => {
+    setUser((u) => ({
+      ...u,
+      [type]: Math.max(0, u[type] - amount),
+    }));
+  };
+
   // Attributes Training
   const handleUpdateStats = (statName: keyof UserProfile['stats']) => {
     if (user.coins < 50) {
@@ -820,6 +853,7 @@ export const App: React.FC = () => {
             claimableTrophiesCount={claimableTrophiesCount}
             onOpenNewQuestModal={() => setIsNewQuestOpen(true)}
             onOpenEnergyModal={() => setIsEnergyOpen(true)}
+            onOpenLuckyWheel={() => setIsLuckyWheelOpen(true)}
             onToggleSound={(enabled) => handleUpdateSettings({ soundEnabled: enabled })}
             onLogout={handleLogout}
           />
@@ -872,6 +906,7 @@ export const App: React.FC = () => {
                   onNavigateToTrophies={() => setActiveTab('trophies')}
                   onToggleQuestComplete={handleToggleQuestComplete}
                   onStartFocus={(quest) => setActiveFocusQuest(quest)}
+                  onOpenLuckyWheel={() => setIsLuckyWheelOpen(true)}
                 />
               )}
 
@@ -1019,6 +1054,14 @@ export const App: React.FC = () => {
             gems: Math.max(0, prev.gems - 10),
           }));
         }}
+      />
+
+      <LuckyWheelModal
+        isOpen={isLuckyWheelOpen}
+        onClose={() => setIsLuckyWheelOpen(false)}
+        user={user}
+        onClaimReward={handleClaimWheelReward}
+        onDeductCurrency={handleDeductCurrency}
       />
     </div>
   );

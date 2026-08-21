@@ -13,6 +13,7 @@ interface DesktopSidebarProps {
   claimableTrophiesCount?: number;
   onOpenNewQuestModal: () => void;
   onOpenEnergyModal: () => void;
+  onOpenLuckyWheel?: () => void;
   onToggleSound: (enabled: boolean) => void;
   onLogout: () => void;
 }
@@ -27,6 +28,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   claimableTrophiesCount = 0,
   onOpenNewQuestModal,
   onOpenEnergyModal,
+  onOpenLuckyWheel,
   onToggleSound,
   onLogout,
 }) => {
@@ -282,6 +284,28 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 
       {/* Bottom Sidebar Footer Actions */}
       <div className="pt-3.5 mt-3.5 border-t-2 border-[#1b1214] space-y-2.5">
+        {/* Festival Lucky Wheel Shortcut */}
+        {onOpenLuckyWheel && (
+          <button
+            onClick={() => {
+              playClickSound();
+              onOpenLuckyWheel();
+            }}
+            onMouseEnter={() => playHoverSound()}
+            className="w-full py-2.5 px-3 bg-gradient-to-r from-[#ffd000] to-[#ffea79] hover:from-[#39ff14] hover:to-[#00f5ff] text-[#1b1214] font-pixel text-[7.5px] sm:text-[8px] chunky-border arcade-btn flex items-center justify-between font-bold cursor-pointer shadow-[2px_2px_0px_#1b1214] group"
+          >
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[17px] text-[#ff0055] group-hover:rotate-45 transition-transform">
+                casino
+              </span>
+              <span>EVENT FESTIVAL</span>
+            </div>
+            <span className="font-pixel text-[6.5px] bg-[#ff0055] text-white px-1.5 py-0.5 chunky-border animate-pulse">
+              1x FREE
+            </span>
+          </button>
+        )}
+
         {/* Quick Energy Recharge Shortcut */}
         <button
           onClick={() => {

@@ -27,6 +27,7 @@ interface HomeViewProps {
   onNavigateToTrophies?: () => void;
   onToggleQuestComplete?: (id: string) => void;
   onStartFocus?: (quest: Quest) => void;
+  onOpenLuckyWheel?: () => void;
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({
@@ -42,6 +43,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
   onNavigateToTrophies,
   onToggleQuestComplete,
   onStartFocus,
+  onOpenLuckyWheel,
 }) => {
   const [isAttacking, setIsAttacking] = useState(false);
   const [lastDamage, setLastDamage] = useState<number | null>(null);
@@ -144,6 +146,53 @@ export const HomeView: React.FC<HomeViewProps> = ({
             >
               <span className="material-symbols-outlined text-[22px]">swords</span>
               PAPAN QUEST ({activeCount})
+            </button>
+          </div>
+
+          {/* Festival Event Banner: Lucky Fortune Wheel */}
+          <div
+            onClick={() => {
+              playClickSound();
+              if (onOpenLuckyWheel) onOpenLuckyWheel();
+            }}
+            onMouseEnter={() => playHoverSound()}
+            className="bg-gradient-to-r from-[#ffd000] via-[#ffea79] to-[#39ff14] p-4 sm:p-5 chunky-border chunky-shadow flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden cursor-pointer card-hover-pop select-none"
+          >
+            <div className="flex items-center gap-3.5 relative z-10 min-w-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#1b1214] text-[#ffd000] chunky-border flex items-center justify-center shrink-0 shadow-[3px_3px_0px_#1b1214]">
+                <span className="material-symbols-outlined text-[30px] sm:text-[32px] animate-spin" style={{ animationDuration: '8s' }}>
+                  casino
+                </span>
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="font-pixel text-[7.5px] bg-[#ff0055] text-white px-2 py-0.5 chunky-border font-bold uppercase shadow-[1px_1px_0px_#1b1214] animate-pulse">
+                    🎪 EVENT FESTIVAL
+                  </span>
+                  <span className="font-pixel text-[7.5px] bg-[#1b1214] text-[#39ff14] px-2 py-0.5 chunky-border font-bold shadow-[1px_1px_0px_#1b1214]">
+                    1x FREE SPIN HARI INI
+                  </span>
+                </div>
+                <h3 className="font-headline font-bold text-xl sm:text-2xl text-[#1b1214] mt-0.5 leading-tight truncate">
+                  Roda Keberuntungan Ksatria
+                </h3>
+                <p className="font-body text-xs text-[#4a3034] truncate">
+                  Menangkan ratusan Gold, Permata Jackpot, Stamina, atau Bom Serangan Bos!
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                playClickSound();
+                if (onOpenLuckyWheel) onOpenLuckyWheel();
+              }}
+              onMouseEnter={() => playHoverSound()}
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#1b1214] hover:bg-[#ff0055] text-white font-pixel text-[8.5px] sm:text-[9px] chunky-border arcade-btn font-bold flex items-center justify-center gap-2 cursor-pointer shadow-[2px_2px_0px_#1b1214] shrink-0"
+            >
+              <span className="material-symbols-outlined text-[18px] text-[#ffea79]">stars</span>
+              PUTAR RODA SEKARANG
             </button>
           </div>
 
