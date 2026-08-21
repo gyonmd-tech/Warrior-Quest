@@ -27,6 +27,8 @@ interface SettingsViewProps {
     characterClass: UserProfile['characterClass']
   ) => void;
   onResetAllData: () => void;
+  onLoadDemoData?: () => void;
+  onResetToStarter?: () => void;
   onImportData: (importedJson: string) => boolean;
   onLogout: () => void;
 }
@@ -37,6 +39,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onUpdateSettings,
   onUpdateProfile,
   onResetAllData,
+  onLoadDemoData,
+  onResetToStarter,
   onImportData,
   onLogout,
 }) => {
@@ -706,46 +710,58 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             )}
           </div>
 
-          {/* Danger Zone */}
-          <div className="p-4 border-2 border-dashed border-[#ff0055] bg-[#ffe2e6] space-y-3">
+          {/* Presets & Reset Zone */}
+          <div className="p-4 border-2 border-dashed border-[#ff0055] bg-[#ffe2e6] space-y-4">
             <div className="flex items-center gap-2 text-[#ff0055]">
-              <span className="material-symbols-outlined text-[22px]">dangerous</span>
+              <span className="material-symbols-outlined text-[22px]">tune</span>
               <h4 className="font-headline font-bold text-base text-[#1b1214]">
-                Zona Berbahaya: Reset Pabrik Data
+                Manajemen Akun & Reset Status
               </h4>
             </div>
             <p className="font-body text-xs text-[#4a3034]">
-              Menghapus semua progres, quests, level ksatria, dan mengembalikan aplikasi ke kondisi awal.
+              Pilih apakah Anda ingin memulai dari awal (Level 1 Kosong) atau memuat ulang dataset demo.
             </p>
 
-            {!isResetConfirmOpen ? (
-              <button
-                onClick={() => setIsResetConfirmOpen(true)}
-                onMouseEnter={() => playHoverSound()}
-                className="px-4 py-2 bg-[#fcc2ca] hover:bg-[#ff0055] hover:text-white text-[#ff0055] font-pixel text-[8px] chunky-border arcade-btn cursor-pointer font-bold"
-              >
-                RESET SEMUA DATA PETUALANGAN...
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {onResetToStarter && (
                 <button
                   onClick={() => {
                     playDeleteSound();
-                    onResetAllData();
-                    setIsResetConfirmOpen(false);
+                    onResetToStarter();
+                    alert('Akun berhasil di-reset ke Level 1 dengan quest starter bersih!');
                   }}
-                  className="px-4 py-2 bg-[#ff0055] text-white font-pixel text-[8px] chunky-border font-bold cursor-pointer"
+                  onMouseEnter={() => playHoverSound()}
+                  className="px-3.5 py-2 bg-white hover:bg-[#ff0055] hover:text-white text-[#ff0055] font-pixel text-[8px] chunky-border arcade-btn cursor-pointer font-bold flex items-center gap-1.5"
                 >
-                  YA, SAYA YAKIN INGIN RESET
+                  <span className="material-symbols-outlined text-[15px]">restart_alt</span>
+                  RESET KE LEVEL 1 (AWAL BARU)
                 </button>
+              )}
+
+              {onLoadDemoData && (
                 <button
-                  onClick={() => setIsResetConfirmOpen(false)}
-                  className="px-4 py-2 bg-white text-[#1b1214] font-pixel text-[8px] chunky-border cursor-pointer"
+                  onClick={() => {
+                    playRewardSound();
+                    onLoadDemoData();
+                    alert('Data demo Alex (Level 12 Warrior) berhasil dimuat!');
+                  }}
+                  onMouseEnter={() => playHoverSound()}
+                  className="px-3.5 py-2 bg-[#ffea79] hover:bg-[#39ff14] text-[#1b1214] font-pixel text-[8px] chunky-border arcade-btn cursor-pointer font-bold flex items-center gap-1.5"
                 >
-                  BATALKAN
+                  <span className="material-symbols-outlined text-[15px]">sports_esports</span>
+                  MUAT ULANG DATA DEMO (LVL 12)
                 </button>
-              </div>
-            )}
+              )}
+
+              <button
+                onClick={onLogout}
+                onMouseEnter={() => playHoverSound()}
+                className="px-3.5 py-2 bg-[#1b1214] hover:bg-[#4a3034] text-white font-pixel text-[8px] chunky-border arcade-btn cursor-pointer font-bold flex items-center gap-1.5"
+              >
+                <span className="material-symbols-outlined text-[15px]">logout</span>
+                KELUAR DARI AKUN (LOGOUT)
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -27,18 +27,39 @@ authRouter.post('/login', (req: Request, res: Response) => {
     });
   }
 
-  // Auto-register default profile for demonstration/development
+  // Auto-register fresh Level 1 profile for new registrations
   const newUser: UserProfile = {
-    ...dbStore.getUser(),
     id: `hero_${Date.now()}`,
     email,
-    name: email.split('@')[0] || 'Ksatria Quest',
+    name: email.split('@')[0] || 'Ksatria Baru',
+    characterClass: 'Warrior',
+    title: 'Pemula Pencari Disiplin',
+    level: 1,
+    currentXp: 0,
+    maxXp: 200,
+    lifetimeXp: 0,
+    totalFocusMinutes: 0,
+    streakDays: 1,
+    avatarUrl: 'https://api.dicebear.com/7.x/adventurer/svg?seed=ValiantWarrior&backgroundColor=ffe2e6',
+    energy: 100,
+    maxEnergy: 100,
+    gems: 10,
+    coins: 100,
+    lastLoginDate: new Date().toISOString(),
+    totalQuestsCompleted: 0,
+    totalDamageDealt: 0,
+    stats: {
+      strength: 10,
+      agility: 10,
+      intelligence: 10,
+      vitality: 10,
+    },
   };
 
   dbStore.addUser(newUser);
   return res.json({
     success: true,
-    message: 'User created & logged in',
+    message: 'Ksatria Baru berhasil dibuat (Level 1)!',
     token: `jwt_token_${newUser.id}_${Date.now()}`,
     data: newUser,
   });

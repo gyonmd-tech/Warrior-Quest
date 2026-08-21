@@ -4,31 +4,31 @@ import { UserProfile } from '../types';
 import { playClickSound, playHoverSound, playRewardSound } from '../utils/audio';
 
 interface LoginViewProps {
-  onLogin: (profile: Partial<UserProfile>) => void;
+  onLogin: (profile: Partial<UserProfile>, isRegister?: boolean) => void;
   onGuestLogin: () => void;
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGuestLogin }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [selectedClassIndex, setSelectedClassIndex] = useState(0);
-  const [heroName, setHeroName] = useState('Valiant Alex');
-  const [email, setEmail] = useState('warrior@questlog.game');
-  const [password, setPassword] = useState('••••••••');
+  const [heroName, setHeroName] = useState('Ksatria Petualang');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const selectedClass = AVATAR_OPTIONS[selectedClassIndex];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     playRewardSound();
-    onLogin({
-      name: heroName.trim() || 'Hero Adventurer',
-      email: email.trim() || 'adventurer@questlog.game',
-      characterClass: selectedClass.class as UserProfile['characterClass'],
-      avatarUrl: selectedClass.url,
-      level: isRegister ? 1 : 12,
-      currentXp: isRegister ? 0 : 750,
-      maxXp: isRegister ? 200 : 1000,
-    });
+    onLogin(
+      {
+        name: heroName.trim() || (isRegister ? 'Ksatria Baru' : 'Valiant Alex'),
+        email: email.trim() || (isRegister ? 'adventurer@questlog.game' : 'warrior@questlog.game'),
+        characterClass: selectedClass.class as UserProfile['characterClass'],
+        avatarUrl: selectedClass.url,
+      },
+      isRegister
+    );
   };
 
   const handleQuickDemoLogin = () => {
@@ -194,20 +194,22 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin, onGuestLogin }) =
             <button
               type="submit"
               onMouseEnter={() => playHoverSound()}
-              className="flex-1 py-3 bg-[#39ff14] hover:bg-[#2fe00c] text-[#1b1214] font-pixel text-[10px] chunky-border arcade-btn transition-all font-bold flex items-center justify-center gap-2 cursor-pointer"
+              className="flex-1 py-3 bg-[#39ff14] hover:bg-[#2fe00c] text-[#1b1214] font-pixel text-[9.5px] chunky-border arcade-btn transition-all font-bold flex items-center justify-center gap-2 cursor-pointer shadow-[2px_2px_0px_#1b1214]"
             >
-              <span className="material-symbols-outlined text-[18px]">vpn_key</span>
-              {isRegister ? 'TEMPA HERO & MASUK' : 'MASUK KE REALM QUEST'}
+              <span className="material-symbols-outlined text-[18px]">
+                {isRegister ? 'add_circle' : 'login'}
+              </span>
+              {isRegister ? 'TEMPA HERO & MULAI (LVL 1)' : 'MASUK DENGAN AKUN INI'}
             </button>
 
             <button
               type="button"
               onClick={handleQuickDemoLogin}
               onMouseEnter={() => playHoverSound()}
-              className="py-3 px-4 bg-[#ffea79] hover:bg-[#ffd000] text-[#1b1214] font-pixel text-[9px] chunky-border arcade-btn transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap font-bold"
+              className="py-3 px-4 bg-[#ffea79] hover:bg-[#ffd000] text-[#1b1214] font-pixel text-[8.5px] chunky-border arcade-btn transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap font-bold shadow-[2px_2px_0px_#1b1214]"
             >
-              <span className="material-symbols-outlined text-[18px]">bolt</span>
-              1-Klik Demo Login
+              <span className="material-symbols-outlined text-[18px]">sports_esports</span>
+              Coba Mode Demo (Lvl 12)
             </button>
           </div>
         </form>

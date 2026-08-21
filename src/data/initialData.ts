@@ -37,7 +37,7 @@ export const AVATAR_OPTIONS = [
 
 export const INITIAL_USER_PROFILE: UserProfile = {
   id: 'usr-12',
-  name: 'Valiant Alex',
+  name: 'Valiant Alex (Demo)',
   email: 'warrior@questlog.game',
   characterClass: 'Warrior',
   title: 'Vanguard of Daily Discipline',
@@ -60,6 +60,55 @@ export const INITIAL_USER_PROFILE: UserProfile = {
     vitality: 34,
   },
 };
+
+export const NEW_USER_STARTER_PROFILE: UserProfile = {
+  id: 'usr-new',
+  name: 'Ksatria Baru',
+  email: 'adventurer@questlog.game',
+  characterClass: 'Warrior',
+  title: 'Pemula Pencari Disiplin',
+  level: 1,
+  currentXp: 0,
+  maxXp: 200,
+  lifetimeXp: 0,
+  totalFocusMinutes: 0,
+  streakDays: 1,
+  avatarUrl: AVATAR_OPTIONS[0].url,
+  energy: 100,
+  maxEnergy: 100,
+  gems: 10,
+  coins: 100,
+  lastLoginDate: new Date().toISOString(),
+  totalQuestsCompleted: 0,
+  totalDamageDealt: 0,
+  stats: {
+    strength: 10,
+    agility: 10,
+    intelligence: 10,
+    vitality: 10,
+  },
+};
+
+export const NEW_USER_STARTER_QUESTS: Quest[] = [
+  {
+    id: 'quest-starter-1',
+    title: '⚔️ Selesaikan Quest Pertama Anda',
+    category: 'daily',
+    xpReward: 100,
+    goldReward: 50,
+    gemReward: 5,
+    bossDamage: 150,
+    estimatedMinutes: 10,
+    priority: 'high',
+    description: 'Selamat datang di Warrior Quest Log! Klik tombol centang hijau untuk menuntaskan quest ini dan meraih XP perdanmu.',
+    completed: false,
+    createdAt: new Date().toISOString(),
+    subtasks: [
+      { id: 'st_1', text: 'Buka Papan Quest', completed: true },
+      { id: 'st_2', text: 'Klik tombol centang hijau pada kartu ini', completed: false },
+    ],
+  },
+];
 
 export const INITIAL_QUESTS: Quest[] = [
   {

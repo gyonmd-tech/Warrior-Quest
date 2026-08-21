@@ -28,6 +28,8 @@ import {
   INITIAL_SELF_REWARDS,
   INITIAL_TROPHIES,
   INITIAL_USER_PROFILE,
+  NEW_USER_STARTER_PROFILE,
+  NEW_USER_STARTER_QUESTS,
 } from './data/initialData';
 import {
   ActivityDayRecord,
@@ -60,7 +62,7 @@ export const App: React.FC = () => {
   const [loadingMessage, setLoadingMessage] = useState<string>('Memasuki Realm Ksatria...');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
     const savedAuth = localStorage.getItem('warrior_logged_in');
-    return savedAuth !== null ? JSON.parse(savedAuth) : true;
+    return savedAuth !== null ? JSON.parse(savedAuth) : false;
   });
 
   // Navigation Tabs
@@ -244,24 +246,80 @@ export const App: React.FC = () => {
   }, [settings]);
 
   // Auth Handlers
-  const handleLogin = (profile: Partial<UserProfile>) => {
-    setUser((prev) => ({
-      ...prev,
-      ...profile,
-    }));
-    setLoadingMessage(`Mengautentikasi ${profile.name || 'Ksatria'}...`);
+  const handleLogin = (profile: Partial<UserProfile>, isRegister?: boolean) => {
+    if (isRegister) {
+      const freshUser: UserProfile = {
+        ...NEW_USER_STARTER_PROFILE,
+        ...profile,
+        id: `usr_${Date.now()}`,
+        name: profile.name || 'Ksatria Baru',
+      };
+      const freshQuests = NEW_USER_STARTER_QUESTS;
+      const freshRewards: SelfReward[] = [];
+      const freshLogs: ActivityDayRecord[] = [
+        {
+          date: new Date().toISOString().slice(0, 10),
+          xpEarned: 0,
+          questsCompleted: 0,
+          focusMinutes: 0,
+          streakCount: 1,
+        },
+      ];
+      const freshEquipment = INITIAL_EQUIPMENT.map((e) => ({
+        ...e,
+        equipped: e.id === 'eq-1',
+        purchased: e.levelReq === 1,
+      }));
+
+      setUser(freshUser);
+      setQuests(freshQuests);
+      setSelfRewards(freshRewards);
+      setActivityLogs(freshLogs);
+      setEquipment(freshEquipment);
+      setRaidBoss(INITIAL_RAID_BOSS);
+
+      localStorage.setItem('warrior_user_profile', JSON.stringify(freshUser));
+      localStorage.setItem('warrior_quests', JSON.stringify(freshQuests));
+      localStorage.setItem('warrior_self_rewards', JSON.stringify(freshRewards));
+      localStorage.setItem('warrior_activity_logs', JSON.stringify(freshLogs));
+      localStorage.setItem('warrior_equipment', JSON.stringify(freshEquipment));
+      localStorage.setItem('warrior_raid_boss', JSON.stringify(INITIAL_RAID_BOSS));
+
+      setLoadingMessage(`Menempa Ksatria ${freshUser.name} (Level 1)...`);
+    } else {
+      setUser((prev) => ({
+        ...prev,
+        ...profile,
+      }));
+      setLoadingMessage(`Mengautentikasi ${profile.name || 'Ksatria'}...`);
+    }
+
     setIsLoading(true);
     setIsLoggedIn(true);
   };
 
   const handleGuestLogin = () => {
     setUser(INITIAL_USER_PROFILE);
-    setLoadingMessage('Memuat Ksatria Alex (Lvl 12 Warrior)...');
+    setQuests(INITIAL_QUESTS);
+    setSelfRewards(INITIAL_SELF_REWARDS);
+    setActivityLogs(INITIAL_ACTIVITY_LOGS);
+    setEquipment(INITIAL_EQUIPMENT);
+    setRaidBoss(INITIAL_RAID_BOSS);
+
+    localStorage.setItem('warrior_user_profile', JSON.stringify(INITIAL_USER_PROFILE));
+    localStorage.setItem('warrior_quests', JSON.stringify(INITIAL_QUESTS));
+    localStorage.setItem('warrior_self_rewards', JSON.stringify(INITIAL_SELF_REWARDS));
+    localStorage.setItem('warrior_activity_logs', JSON.stringify(INITIAL_ACTIVITY_LOGS));
+    localStorage.setItem('warrior_equipment', JSON.stringify(INITIAL_EQUIPMENT));
+    localStorage.setItem('warrior_raid_boss', JSON.stringify(INITIAL_RAID_BOSS));
+
+    setLoadingMessage('Memuat Mode Demo Alex (Lvl 12 Warrior)...');
     setIsLoading(true);
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
+    localStorage.setItem('warrior_logged_in', 'false');
     setLoadingMessage('Kembali ke Gerbang Sanctuary...');
     setIsLoading(true);
     setIsLoggedIn(false);
@@ -275,28 +333,62 @@ export const App: React.FC = () => {
     }));
   };
 
-  const handleResetAllData = () => {
-    localStorage.removeItem('warrior_user_profile');
-    localStorage.removeItem('warrior_quests');
-    localStorage.removeItem('warrior_self_rewards');
-    localStorage.removeItem('warrior_activity_logs');
-    localStorage.removeItem('warrior_daily_rewards');
-    localStorage.removeItem('warrior_trophies');
-    localStorage.removeItem('warrior_equipment');
-    localStorage.removeItem('warrior_raid_boss');
-    localStorage.removeItem('warrior_settings');
+  const handleResetToStarter = () => {
+    const freshUser = { ...NEW_USER_STARTER_PROFILE, id: `usr_${Date.now()}` };
+    const freshQuests = NEW_USER_STARTER_QUESTS;
+    const freshRewards: SelfReward[] = [];
+    const freshLogs: ActivityDayRecord[] = [
+      {
+        date: new Date().toISOString().slice(0, 10),
+        xpEarned: 0,
+        questsCompleted: 0,
+        focusMinutes: 0,
+        streakCount: 1,
+      },
+    ];
+    const freshEquipment = INITIAL_EQUIPMENT.map((e) => ({
+      ...e,
+      equipped: e.id === 'eq-1',
+      purchased: e.levelReq === 1,
+    }));
 
+    setUser(freshUser);
+    setQuests(freshQuests);
+    setSelfRewards(freshRewards);
+    setActivityLogs(freshLogs);
+    setEquipment(freshEquipment);
+    setRaidBoss(INITIAL_RAID_BOSS);
+
+    localStorage.setItem('warrior_user_profile', JSON.stringify(freshUser));
+    localStorage.setItem('warrior_quests', JSON.stringify(freshQuests));
+    localStorage.setItem('warrior_self_rewards', JSON.stringify(freshRewards));
+    localStorage.setItem('warrior_activity_logs', JSON.stringify(freshLogs));
+    localStorage.setItem('warrior_equipment', JSON.stringify(freshEquipment));
+    localStorage.setItem('warrior_raid_boss', JSON.stringify(INITIAL_RAID_BOSS));
+
+    playRewardSound();
+  };
+
+  const handleLoadDemoData = () => {
     setUser(INITIAL_USER_PROFILE);
     setQuests(INITIAL_QUESTS);
     setSelfRewards(INITIAL_SELF_REWARDS);
     setActivityLogs(INITIAL_ACTIVITY_LOGS);
-    setDailyRewards(INITIAL_DAILY_REWARDS);
-    setTrophies(INITIAL_TROPHIES);
     setEquipment(INITIAL_EQUIPMENT);
     setRaidBoss(INITIAL_RAID_BOSS);
-    setSettings(INITIAL_SETTINGS);
+
+    localStorage.setItem('warrior_user_profile', JSON.stringify(INITIAL_USER_PROFILE));
+    localStorage.setItem('warrior_quests', JSON.stringify(INITIAL_QUESTS));
+    localStorage.setItem('warrior_self_rewards', JSON.stringify(INITIAL_SELF_REWARDS));
+    localStorage.setItem('warrior_activity_logs', JSON.stringify(INITIAL_ACTIVITY_LOGS));
+    localStorage.setItem('warrior_equipment', JSON.stringify(INITIAL_EQUIPMENT));
+    localStorage.setItem('warrior_raid_boss', JSON.stringify(INITIAL_RAID_BOSS));
 
     playRewardSound();
+  };
+
+  const handleResetAllData = () => {
+    handleResetToStarter();
     confetti({
       particleCount: 50,
       spread: 60,
@@ -763,6 +855,8 @@ export const App: React.FC = () => {
                   onUpdateSettings={handleUpdateSettings}
                   onUpdateProfile={handleUpdateProfile}
                   onResetAllData={handleResetAllData}
+                  onLoadDemoData={handleLoadDemoData}
+                  onResetToStarter={handleResetToStarter}
                   onImportData={handleImportData}
                   onLogout={handleLogout}
                 />
