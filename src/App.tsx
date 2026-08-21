@@ -232,6 +232,39 @@ export const App: React.FC = () => {
         lastLoginDate: today,
       }));
     }
+
+    // Passive Natural Stamina Regeneration (+1 Energy every 6 minutes)
+    const nowMs = Date.now();
+    const lastActiveStr = localStorage.getItem('warrior_last_active_timestamp');
+    if (lastActiveStr) {
+      const lastActiveMs = parseInt(lastActiveStr, 10);
+      const minutesPassed = Math.floor((nowMs - lastActiveMs) / (1000 * 60));
+      if (minutesPassed >= 6) {
+        const energyGained = Math.floor(minutesPassed / 6);
+        setUser((prev) => ({
+          ...prev,
+          energy: Math.min(prev.maxEnergy, prev.energy + energyGained),
+        }));
+      }
+    }
+    localStorage.setItem('warrior_last_active_timestamp', nowMs.toString());
+  }, []);
+
+  // Periodic Stamina Pulse (Every 5 minutes while active)
+  useEffect(() => {
+    const pulseTimer = setInterval(() => {
+      localStorage.setItem('warrior_last_active_timestamp', Date.now().toString());
+      setUser((prev) => {
+        if (prev.energy < prev.maxEnergy) {
+          return {
+            ...prev,
+            energy: Math.min(prev.maxEnergy, prev.energy + 1),
+          };
+        }
+        return prev;
+      });
+    }, 5 * 60 * 1000);
+    return () => clearInterval(pulseTimer);
   }, []);
 
   // Local Storage Persistence
